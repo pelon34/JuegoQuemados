@@ -1,0 +1,122 @@
+
+
+body
+{
+    background-image: url("../img/scaryBackground.jpg"); 
+    padding-top: 10px;
+    padding-bottom: 40px;
+    color:black;
+
+}
+
+.block
+{
+    border-style: solid;
+    border-width: 3px;
+    border-style:groove;
+    border-color: darkkhaki;
+
+}
+
+.center 
+{
+    margin: auto;
+    padding: 10px;
+}
+
+.imageArea
+{
+    height: 369px; 
+    width: 666px; 
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.solutionArea
+{
+    height: 150px;
+    width: 666px; 
+    margin-bottom: 15px;
+}
+
+.solutionAreaInternal
+{
+    background-image:  url("../img/empty.jpg");
+    height: 150px;
+    width: 666px; 
+    text-align: center;
+}
+
+.floating-box {
+    display: inline-block;
+
+}
+
+.startArea
+{
+    height: 100px;
+    width: 295px;
+    margin-right: 20px;
+    padding: 10px;
+    background-image:  url("../img/emptySimple.jpg");
+}
+
+.playArea
+{
+    height: 100px;
+    width: 295px;
+    padding: 10px;
+    background-image:  url("../img/emptySimple.jpg");
+    text-align: center;
+}
+
+.centerPlayingGroup
+{
+    width: 666px; 
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+}
+
+label
+{
+    font-weight:bold;
+    font-size: 14px;
+}
+
+#letterChosen
+{
+    text-transform: uppercase;
+}
+
+#startButton , #submitButton, #topicSelected
+{
+   width:150px;
+}
+
+#letterChosen
+{
+    width:20px;
+}
+
+.hiddenLetter
+{
+   font-size: 40px;
+   font-style: italic;
+   font-weight: bolder;
+   text-decoration: underline;
+   margin:10px;
+}
+
+#hiddenLettersArea
+{
+    margin-top: 35px;
+    display:none;
+}
+
+.triesLabel, #tries
+{
+    margin-top: 15px;
+    font-size: 16px;
+   color:red
+}

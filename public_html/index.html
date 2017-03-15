@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.css" type="text/css"/>
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
+
+        <script src="js/jquery.js"></script>
+
+        <title>Juego de Quemados</title>
+    </head>
+
+    <body>
+
+
+        <!-- Playing Image -->
+
+        <div class="row">
+            <div class="imageArea block center">
+                <img id='gameImage' src="img/Wellcome.jpg" alt="Wellcome Image"  >
+            </div>
+        </div>
+
+
+
+        <!-- Solution Area -->
+
+        <div class="row">
+
+            <div class="solutionArea block center" >
+
+                <div class="solutionAreaInternal" >
+
+                    <h3>Complete the hidden word and save the prisoner...</h3>
+                    <div id="dinamicWordArea">
+
+                        <div id='hiddenLettersArea'>
+                            <span id='letter0' class='hiddenLetter'>?</span>
+                            <span id='letter1' class='hiddenLetter'>?</span>
+                            <span id='letter2' class='hiddenLetter'>?</span>
+                            <span id='letter3' class='hiddenLetter'>?</span>
+                            <span id='letter4' class='hiddenLetter'>?</span>
+                            <span id='letter5' class='hiddenLetter'>?</span>
+                            <span id='letter6' class='hiddenLetter'>?</span>
+                            <span id='letter7' class='hiddenLetter'>?</span>
+
+                            <label class='triesLabel'>Tries:<span id='tries'></span></label>
+                        </div>
+
+                        <div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Controls Area -->
+
+        <div class="row">
+
+            <div class="block centerPlayingGroup">
+                <div class="startArea block floating-box ">
+                    <label class="">Select a Topic:</label>
+                    <select id='topicSelected' class="input-medium">
+                        <option>Games</option>
+                    </select>
+                    <div>
+                        <input id='startButton' type="button" class="btn btn-success btn-large" value="Start"  onclick='startGame()' />
+                    </div>
+                </div>
+
+                <div class="playArea block  floating-box">
+                    <label>Choose A Letter:</label>
+                    <input id='letterChosen' type="text" maxlength="1"  value="" disabled="disabled"/>
+                    <div>
+                        <input id='submitButton' type="button" class='btn btn-success btn-large' value="Submit"  disabled="disabled" onclick='reviewLetter()'/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <audio id="effects" controls style="display:none">
+            <source src="sound/Loud_Bang.mp3" type="audio/mpeg">
+        </audio>
+
+
+        <script type="text/javascript">
+
+
+            var remainingTries = 5;
+            var hiddenword;
+            var gameStage = 1;
+
+
+            var hiddenwordOptions = [
+                ["F", "O", "O", "T", "B", "A", "L", "L"],
+                ["S", "C", "R", "A", "B", "B", "L", "E"],
+                ["S", "H", "O", "O", "T", "I", "N", "G"],
+                ["B", "A", "S", "E", "B", "A", "L", "L"],
+                ["C", "H", "E", "C", "K", "E", "R", "S"],
+                ["C", "L", "I", "M", "B", "I", "N", "G"],
+                ["L", "A", "C", "R", "O", "S", "S", "E"],
+                ["H", "A", "N", "D", "B", "A", "L", "L"],
+                ["M", "A", "R", "A", "T", "H", "O", "N"],
+                ["S", "O", "F", "T", "B", "A", "L", "L"],
+                ["D", "O", "M", "I", "N", "O", "E", "S"]
+
+            ];
+
+
+
+            function startGame() {
+                //prepare Your data array with img urls
+                var dataArray = new Array();
+                dataArray[0] = "img/3.jpg";
+                dataArray[1] = "img/2.jpg";
+                dataArray[2] = "img/1.jpg";
+                dataArray[3] = "img/go.jpg";
+                dataArray[4] = "img/State1.jpg";
+                hideSolutionArea();
+
+                //reset all word values and counters
+                remainingTries = 5;
+                remainingLetters = 8;
+                gameStage = 1;
+                resetWordvalues();
+                document.getElementById('submitButton').removeAttribute("disabled", "true");
+                document.getElementById('letterChosen').removeAttribute("disabled", "true");
+
+                //picknewValues
+                var randomNum = Math.floor((Math.random() * 7) + 1);
+                hiddenword = hiddenwordOptions[randomNum];
+
+
+
+                //start animation with id=0 after 5 seconds
+                playCountdown();
+                
+                var progress = 0;
+                window.setInterval(function () {
+
+                    if (progress === 2)
+                    {
+                        hideSolutionArea();
+                    }
+
+                    $('#gameImage').attr('src', dataArray[progress]);
+                    progress++;
+                    if (progress === 5)
+                    {
+                        displaySolutionArea();
+                    }
+
+                }, 800);
+
+                document.getElementById('letterChosen').focus();
+            }
+
+            function hideSolutionArea()
+            {
+                document.getElementById('hiddenLettersArea').style.display = 'none';
+            }
+
+            function displaySolutionArea()
+            {
+                document.getElementById('hiddenLettersArea').style.display = 'block';
+                document.getElementById('tries').innerHTML = remainingTries;
+            }
+
+
+            function resetWordvalues() {
+                document.getElementById('letter0').innerHTML = "?";
+                document.getElementById('letter1').innerHTML = "?";
+                document.getElementById('letter2').innerHTML = "?";
+                document.getElementById('letter3').innerHTML = "?";
+                document.getElementById('letter4').innerHTML = "?";
+                document.getElementById('letter5').innerHTML = "?";
+                document.getElementById('letter6').innerHTML = "?";
+                document.getElementById('letter7').innerHTML = "?";
+            }
+
+
+            function reviewLetter()
+            {
+                var wordfound = false;
+                var chossen = document.getElementById('letterChosen').value;
+                chossen = chossen.toUpperCase();
+
+
+                if (document.getElementById('letterChosen').value !== "")
+                {
+                    for (var j = 0; j < hiddenword.length; j++)
+                    {
+                        if (hiddenword[j] === chossen)
+                        {
+                            wordfound = true;
+                            playRight();
+                            remainingLetters = remainingLetters - 1;
+                            switch (j)
+                            {
+
+                                case 0:
+                                    document.getElementById('letter0').innerHTML = chossen;
+                                    break;
+                                case 1:
+                                    document.getElementById('letter1').innerHTML = chossen;
+                                    break;
+                                case 2:
+                                    document.getElementById('letter2').innerHTML = chossen;
+                                    break;
+                                case 3:
+                                    document.getElementById('letter3').innerHTML = chossen;
+                                    break;
+                                case 4:
+                                    document.getElementById('letter4').innerHTML = chossen;
+                                    break;
+                                case 5:
+                                    document.getElementById('letter5').innerHTML = chossen;
+                                    break;
+                                case 6:
+                                    document.getElementById('letter6').innerHTML = chossen;
+                                    break;
+                                case 7:
+                                    document.getElementById('letter7').innerHTML = chossen;
+                                    break;
+
+                            }
+
+                        }
+
+                    }
+
+                    if (remainingLetters === 0)
+                    {
+                        winGame();
+                        playWin();
+                        dissableControls();
+                    }
+
+
+                    if (wordfound === false)
+                    {
+                        playWrong();
+                        remainingTries = remainingTries - 1;
+                        gameStage = gameStage + 1;
+                        document.getElementById('tries').innerHTML = remainingTries;
+                        var imag = "img/State" + gameStage.toString() + ".jpg";
+                        document.getElementById('gameImage').src = imag;
+
+                        if (remainingTries === 0)
+                        {
+                            playGameOver();
+                            dissableControls();
+
+                        }
+                    }
+                    document.getElementById('letterChosen').value = "";
+                }
+
+                document.getElementById('letterChosen').focus();
+
+            }
+
+
+            function winGame()
+            {
+                document.getElementById('gameImage').src = "img/StateWin.jpg";
+
+            }
+
+            function dissableControls()
+            {
+                document.getElementById('submitButton').setAttribute("disabled", "disabled");
+                document.getElementById('letterChosen').setAttribute("disabled", "disabled");
+                document.getElementById('startButton').focus();
+            }
+
+
+            function playCountdown() {
+                document.getElementById("effects").src = "sound/321.wav";
+                var audio = document.getElementById("effects");
+                audio.play();
+            }
+
+            function playWin() {
+                document.getElementById("effects").src = "sound/Applause.mp3";
+                var audio = document.getElementById("effects");
+                audio.play();
+            }
+
+            function playWrong() {
+                document.getElementById("effects").src = "sound/Loud_Bang.mp3";
+                var audio = document.getElementById("effects");
+                audio.play();
+            }
+
+            function playGameOver() {
+                document.getElementById("effects").src = "sound/Evil_Laugh.mp3";
+                var audio = document.getElementById("effects");
+                audio.play();
+            }
+            function playRight() {
+                document.getElementById("effects").src = "sound/chaChing.mp3";
+                var audio = document.getElementById("effects");
+                audio.play();
+            }
+
+            function playGameStart() {
+                document.getElementById("effects").src = "sound/Loud_Bang.mp3";
+                var audio = document.getElementById("effects");
+                audio.play();
+            }
+
+
+
+            $(document).keypress(function (e) {
+                if (e.which === 13) {
+                    $("#submitButton").click();
+                }
+            });
+
+
+
+
+        </script>
+
+
+
+
+
+
+
+    </body>
+</html>
